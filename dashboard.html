@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-page="dashboard">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Smart Campus - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/tables.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-logo">SC</div>
+          <div class="brand-text">
+            <span class="brand-title">Smart Campus</span>
+            <span class="brand-subtitle">College ERP</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="nav-section-label">Main</div>
+          <button class="nav-item" data-page="dashboard" onclick="location.href='dashboard.html'">
+            <span class="nav-icon">🏠</span><span>Dashboard</span>
+          </button>
+          <button class="nav-item" data-page="students" onclick="location.href='students.html'">
+            <span class="nav-icon">👩‍🎓</span><span>Students</span>
+          </button>
+          <button class="nav-item" data-page="faculty" onclick="location.href='faculty.html'">
+            <span class="nav-icon">👨‍🏫</span><span>Faculty</span>
+          </button>
+          <button class="nav-item" data-page="attendance" onclick="location.href='attendance.html'">
+            <span class="nav-icon">🕒</span><span>Attendance</span>
+          </button>
+          <button class="nav-item" data-page="courses" onclick="location.href='courses.html'">
+            <span class="nav-icon">📚</span><span>Courses</span>
+          </button>
+          <button class="nav-item" data-page="exams" onclick="location.href='exams.html'">
+            <span class="nav-icon">📝</span><span>Exams & Results</span>
+          </button>
+          <button class="nav-item" data-page="fees" onclick="location.href='fees.html'">
+            <span class="nav-icon">💰</span><span>Fees</span>
+          </button>
+          <div class="nav-section-label">More</div>
+          <button class="nav-item" data-page="timetable" onclick="location.href='timetable.html'">
+            <span class="nav-icon">📅</span><span>Timetable</span>
+          </button>
+          <button class="nav-item" data-page="materials" onclick="location.href='materials.html'">
+            <span class="nav-icon">📝</span><span>Materials & Notes</span>
+          </button>
+          <button class="nav-item" data-page="notifications" onclick="location.href='notifications.html'">
+            <span class="nav-icon">📢</span><span>Notifications</span>
+          </button>
+          <button class="nav-item" data-page="library" onclick="location.href='library.html'">
+            <span class="nav-icon">📖</span><span>Library</span>
+          </button>
+          <button class="nav-item" data-page="placements" onclick="location.href='placements.html'">
+            <span class="nav-icon">💼</span><span>Placements</span>
+          </button>
+          <button class="nav-item" data-page="settings" onclick="location.href='settings.html'">
+            <span class="nav-icon">⚙️</span><span>Settings</span>
+          </button>
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1 id="dashboardTitle">Dashboard</h1>
+            <p class="topbar-subtitle" id="dashboardSubtitle">Overview of campus activity</p>
+          </div>
+          <div class="topbar-right">
+            <span id="currentUserLabel" class="text-muted"></span>
+            <button id="logoutButton" class="btn btn-ghost">Logout</button>
+          </div>
+        </header>
+        <section class="page">
+          <div class="dashboard-grid" id="kpiContainer">
+            <div class="card kpi-card" id="kpiStudentsCard">
+              <div class="kpi-label">Total Students</div>
+              <div class="kpi-value" id="kpiStudents">-</div>
+              <div class="kpi-sub">Active this semester</div>
+            </div>
+            <div class="card kpi-card" id="kpiFacultyCard">
+              <div class="kpi-label">Faculty</div>
+              <div class="kpi-value" id="kpiFaculty">-</div>
+              <div class="kpi-sub">Teaching staff</div>
+            </div>
+            <div class="card kpi-card" id="kpiAttendanceCard">
+              <div class="kpi-label">Average Attendance</div>
+              <div class="kpi-value" id="kpiAttendance">-</div>
+              <div class="kpi-sub">Across all classes</div>
+            </div>
+          </div>
+          <div class="dashboard-secondary" id="secondaryContainer">
+            <div class="card" id="todayClassesCard">
+              <div class="card-header">
+                <h2>Today’s Classes</h2>
+              </div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Course</th>
+                    <th>Faculty</th>
+                    <th>Room</th>
+                  </tr>
+                </thead>
+                <tbody id="todayClassesBody"></tbody>
+              </table>
+            </div>
+            <div class="card" id="notificationsCard">
+              <div class="card-header">
+                <h2>Recent Notifications</h2>
+              </div>
+              <ul class="timeline" id="recentNotifications"></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module">
+      import { requireAuth } from "./js/auth.js";
+      import { initShell } from "./js/app.js";
+      import { fetchAPI } from "./js/api.js";
+      import { createEl } from "./js/utils.js";
+
+      const session = requireAuth(); // any role can see dashboard
+      if (!session) {
+        // redirected
+      } else {
+        initShell("dashboard");
+        loadDashboard();
+      }
+
+      async function loadDashboard() {
+        const studentsRes = await fetchAPI("/api/students", "GET");
+        const facultyRes = await fetchAPI("/api/faculty", "GET");
+        const attendanceRes = await fetchAPI("/api/attendance", "GET");
+        const notifRes = await fetchAPI("/api/notifications", "GET");
+
+        const role = session.role;
+
+        // Role-specific dashboard header
+        const titleEl = document.getElementById("dashboardTitle");
+        const subtitleEl = document.getElementById("dashboardSubtitle");
+        if (role === "admin") {
+          titleEl.textContent = "Admin Dashboard";
+          subtitleEl.textContent = "Manage students, faculty, fees and campus data";
+        } else if (role === "faculty") {
+          titleEl.textContent = "Faculty Dashboard";
+          subtitleEl.textContent = "Your classes, attendance and materials";
+        } else {
+          titleEl.textContent = "Student Dashboard";
+          subtitleEl.textContent = "Your courses, timetable, fees and results";
+        }
+
+        // Role-specific KPI visibility and data
+        if (role === "admin") {
+          document.getElementById("kpiStudents").textContent =
+            studentsRes.data?.length ?? 0;
+          document.getElementById("kpiFaculty").textContent =
+            facultyRes.data?.length ?? 0;
+        } else {
+          document.getElementById("kpiStudentsCard").classList.add("hidden");
+          if (role === "student") {
+            document.getElementById("kpiFacultyCard").classList.add("hidden");
+          } else {
+            document.getElementById("kpiFaculty").textContent =
+              facultyRes.data?.length ?? 0;
+          }
+        }
+
+        const total = attendanceRes.data?.length ?? 0;
+        const present = attendanceRes.data?.filter((a) => a.status === "present")?.length ?? 0;
+        document.getElementById("kpiAttendance").textContent =
+          total === 0 ? "-" : Math.round((present / total) * 100) + "%";
+
+        const todayClassesBody = document.getElementById("todayClassesBody");
+        todayClassesBody.innerHTML = "";
+        if (role === "faculty") {
+          // Show sample faculty schedule
+          (attendanceRes.data || [])
+            .slice(0, 3)
+            .forEach((r, idx) => {
+              const tr = createEl("tr", {}, [
+                createEl("td", { text: ["09:00", "10:00", "11:15"][idx] || "12:00" }),
+                createEl("td", { text: r.className || "Class" }),
+                createEl("td", { text: session.name }),
+                createEl("td", { text: `Room ${idx + 101}` }),
+              ]);
+              todayClassesBody.appendChild(tr);
+            });
+        } else if (role === "student") {
+          // Student quick view of timetable-style entries (reuse courses)
+          (studentsRes.data || [])
+            .slice(0, 3)
+            .forEach((_, idx) => {
+              const tr = createEl("tr", {}, [
+                createEl("td", { text: ["09:00", "10:00", "11:15"][idx] || "12:00" }),
+                createEl("td", { text: ["DS", "OS", "DBMS"][idx] || "Elective" }),
+                createEl("td", { text: (facultyRes.data?.[idx]?.name) || "TBD" }),
+                createEl("td", { text: `C-30${idx + 1}` }),
+              ]);
+              todayClassesBody.appendChild(tr);
+            });
+        } else {
+          // Admin: generic today’s classes overview
+          (studentsRes.data || [])
+            .slice(0, 3)
+            .forEach((_, idx) => {
+              const tr = createEl("tr", {}, [
+                createEl("td", { text: ["09:00", "10:00", "11:15"][idx] || "12:00" }),
+                createEl("td", { text: ["DS", "OS", "DBMS"][idx] || "Elective" }),
+                createEl("td", { text: (facultyRes.data?.[idx]?.name) || "TBD" }),
+                createEl("td", { text: `C-30${idx + 1}` }),
+              ]);
+              todayClassesBody.appendChild(tr);
+            });
+        }
+
+        const notifEl = document.getElementById("recentNotifications");
+        notifEl.innerHTML = "";
+        (notifRes.data || []).slice(-5).forEach((n) => {
+          const li = createEl("li", {}, [
+            `${n.title} `,
+            createEl("span", { class: "text-muted", text: `(${n.audience})` }),
+          ]);
+          notifEl.appendChild(li);
+        });
+      }
+    </script>
+  </body>
+</html>
+

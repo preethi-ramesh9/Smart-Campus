@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-page="courses">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Smart Campus - Courses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/forms.css" />
+    <link rel="stylesheet" href="css/tables.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-logo">SC</div>
+          <div class="brand-text">
+            <span class="brand-title">Smart Campus</span>
+            <span class="brand-subtitle">College ERP</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="nav-section-label">Main</div>
+          <button class="nav-item" data-page="dashboard" onclick="location.href='dashboard.html'">
+            <span class="nav-icon">🏠</span><span>Dashboard</span>
+          </button>
+          <button class="nav-item" data-page="students" onclick="location.href='students.html'">
+            <span class="nav-icon">👩‍🎓</span><span>Students</span>
+          </button>
+          <button class="nav-item" data-page="faculty" onclick="location.href='faculty.html'">
+            <span class="nav-icon">👨‍🏫</span><span>Faculty</span>
+          </button>
+          <button class="nav-item" data-page="attendance" onclick="location.href='attendance.html'">
+            <span class="nav-icon">🕒</span><span>Attendance</span>
+          </button>
+          <button class="nav-item" data-page="courses" onclick="location.href='courses.html'">
+            <span class="nav-icon">📚</span><span>Courses</span>
+          </button>
+          <button class="nav-item" data-page="exams" onclick="location.href='exams.html'">
+            <span class="nav-icon">📝</span><span>Exams & Results</span>
+          </button>
+          <button class="nav-item" data-page="fees" onclick="location.href='fees.html'">
+            <span class="nav-icon">💰</span><span>Fees</span>
+          </button>
+          <div class="nav-section-label">More</div>
+          <button class="nav-item" data-page="timetable" onclick="location.href='timetable.html'">
+            <span class="nav-icon">📅</span><span>Timetable</span>
+          </button>
+          <button class="nav-item" data-page="materials" onclick="location.href='materials.html'">
+            <span class="nav-icon">📝</span><span>Materials & Notes</span>
+          </button>
+          <button class="nav-item" data-page="notifications" onclick="location.href='notifications.html'">
+            <span class="nav-icon">📢</span><span>Notifications</span>
+          </button>
+          <button class="nav-item" data-page="library" onclick="location.href='library.html'">
+            <span class="nav-icon">📖</span><span>Library</span>
+          </button>
+          <button class="nav-item" data-page="placements" onclick="location.href='placements.html'">
+            <span class="nav-icon">💼</span><span>Placements</span>
+          </button>
+          <button class="nav-item" data-page="settings" onclick="location.href='settings.html'">
+            <span class="nav-icon">⚙️</span><span>Settings</span>
+          </button>
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1>Courses</h1>
+            <p class="topbar-subtitle">Course and subject management</p>
+          </div>
+          <div class="topbar-right">
+            <span id="currentUserLabel" class="text-muted"></span>
+            <button id="logoutButton" class="btn btn-ghost">Logout</button>
+          </div>
+        </header>
+        <section class="page">
+          <div class="card">
+            <div class="card-header">
+              <h2>Course List</h2>
+              <div class="filter-row">
+                <input id="courseSearch" type="search" placeholder="Search by code / name / department" />
+                <button id="addCourseBtn" class="btn btn-primary">Add Course</button>
+              </div>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Dept</th>
+                  <th>Semester</th>
+                  <th>Credits</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="courseTableBody"></tbody>
+            </table>
+            <div id="courseEmpty" class="table-empty hidden">
+              No courses found. Click "Add Course" to create one.
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="courseModalBackdrop" class="modal-backdrop hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="courseModalTitle">Add Course</h2>
+          <button id="courseModalClose" class="btn btn-ghost" type="button">×</button>
+        </div>
+        <div class="modal-body">
+          <form id="courseForm" class="form-grid">
+            <div class="form-field">
+              <label for="courseCode">Code</label>
+              <input id="courseCode" required />
+            </div>
+            <div class="form-field">
+              <label for="courseName">Name</label>
+              <input id="courseName" required />
+            </div>
+            <div class="form-field">
+              <label for="courseDept">Department</label>
+              <select id="courseDept" required>
+                <option value="CSE">CSE</option>
+                <option value="ECE">ECE</option>
+                <option value="EEE">EEE</option>
+                <option value="MECH">MECH</option>
+                <option value="CIVIL">CIVIL</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="courseSemester">Semester</label>
+              <input id="courseSemester" type="number" min="1" max="8" required />
+            </div>
+            <div class="form-field">
+              <label for="courseCredits">Credits</label>
+              <input id="courseCredits" type="number" min="1" max="6" required />
+            </div>
+            <div class="form-actions full">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" id="courseCancel" class="btn btn-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./js/courses.js"></script>
+  </body>
+</html>
+

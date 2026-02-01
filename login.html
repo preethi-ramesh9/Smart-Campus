@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Smart Campus - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/forms.css" />
+    <link rel="stylesheet" href="css/components.css" />
+  </head>
+  <body>
+    <div class="auth-screen">
+      <div class="auth-panel">
+        <div class="brand auth-brand">
+          <div class="brand-logo">SC</div>
+          <div class="brand-text">
+            <span class="brand-title">Smart Campus</span>
+            <span class="brand-subtitle">College ERP Login</span>
+          </div>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div class="form-field full">
+            <label for="username">Username</label>
+            <input id="username" type="text" placeholder="admin, faculty1, student1" required />
+          </div>
+          <div class="form-field full">
+            <label for="password">Password</label>
+            <div class="password-field">
+              <input id="password" type="password" placeholder="Demo password" required />
+              <button type="button" id="passwordToggle" class="password-toggle" aria-label="Show or hide password">
+                👁
+              </button>
+            </div>
+          </div>
+          <div id="loginError" class="auth-error"></div>
+          <div class="form-actions full auth-actions">
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </div>
+        </form>
+
+        <div class="auth-demo-info text-muted">
+          <div><strong>Demo accounts (frontend only):</strong></div>
+          <div>Admin: <code>admin / admin123</code></div>
+          <div>Faculty: <code>faculty1 / faculty123</code></div>
+          <div>Student: <code>student1 / student123</code></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { fetchAPI } from "./js/api.js";
+      import { getSession } from "./js/auth.js";
+      import { showToast } from "./js/utils.js";
+
+      const existing = getSession();
+      if (existing) {
+        window.location.href = "dashboard.html";
+      }
+
+      const form = document.getElementById("loginForm");
+      const errorEl = document.getElementById("loginError");
+      const pwdInput = document.getElementById("password");
+      const pwdToggle = document.getElementById("passwordToggle");
+
+      if (pwdToggle && pwdInput) {
+        pwdToggle.addEventListener("click", () => {
+          const isPassword = pwdInput.type === "password";
+          pwdInput.type = isPassword ? "text" : "password";
+          pwdToggle.textContent = isPassword ? "🙈" : "👁";
+        });
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorEl.textContent = "";
+
+        const username = document.getElementById("username").value.trim();
+        const password = pwdInput.value;
+        const res = await fetchAPI("/api/login", "POST", { username, password });
+        if (!res.ok) {
+          errorEl.textContent = res.error || "Login failed.";
+          return;
+        }
+
+        showToast("Login successful", "success");
+        const role = res.data.role;
+        // Role-based landing
+        if (role === "admin") {
+          window.location.href = "dashboard.html";
+        } else if (role === "faculty") {
+          window.location.href = "attendance.html";
+        } else {
+          window.location.href = "dashboard.html";
+        }
+      });
+    </script>
+  </body>
+</html>
+

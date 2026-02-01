@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-page="placements">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Smart Campus - Placements</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/forms.css" />
+    <link rel="stylesheet" href="css/tables.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-logo">SC</div>
+          <div class="brand-text">
+            <span class="brand-title">Smart Campus</span>
+            <span class="brand-subtitle">College ERP</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="nav-section-label">Main</div>
+          <button class="nav-item" data-page="dashboard" onclick="location.href='dashboard.html'">
+            <span class="nav-icon">🏠</span><span>Dashboard</span>
+          </button>
+          <button class="nav-item" data-page="students" onclick="location.href='students.html'">
+            <span class="nav-icon">👩‍🎓</span><span>Students</span>
+          </button>
+          <button class="nav-item" data-page="faculty" onclick="location.href='faculty.html'">
+            <span class="nav-icon">👨‍🏫</span><span>Faculty</span>
+          </button>
+          <button class="nav-item" data-page="attendance" onclick="location.href='attendance.html'">
+            <span class="nav-icon">🕒</span><span>Attendance</span>
+          </button>
+          <button class="nav-item" data-page="courses" onclick="location.href='courses.html'">
+            <span class="nav-icon">📚</span><span>Courses</span>
+          </button>
+          <button class="nav-item" data-page="exams" onclick="location.href='exams.html'">
+            <span class="nav-icon">📝</span><span>Exams & Results</span>
+          </button>
+          <button class="nav-item" data-page="fees" onclick="location.href='fees.html'">
+            <span class="nav-icon">💰</span><span>Fees</span>
+          </button>
+          <div class="nav-section-label">More</div>
+          <button class="nav-item" data-page="timetable" onclick="location.href='timetable.html'">
+            <span class="nav-icon">📅</span><span>Timetable</span>
+          </button>
+          <button class="nav-item" data-page="notifications" onclick="location.href='notifications.html'">
+            <span class="nav-icon">📢</span><span>Notifications</span>
+          </button>
+          <button class="nav-item" data-page="library" onclick="location.href='library.html'">
+            <span class="nav-icon">📖</span><span>Library</span>
+          </button>
+          <button class="nav-item" data-page="placements" onclick="location.href='placements.html'">
+            <span class="nav-icon">💼</span><span>Placements</span>
+          </button>
+          <button class="nav-item" data-page="settings" onclick="location.href='settings.html'">
+            <span class="nav-icon">⚙️</span><span>Settings</span>
+          </button>
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1>Placements</h1>
+            <p class="topbar-subtitle">Company drives and student status</p>
+          </div>
+          <div class="topbar-right">
+            <span id="currentUserLabel" class="text-muted"></span>
+            <button id="logoutButton" class="btn btn-ghost">Logout</button>
+          </div>
+        </header>
+        <section class="page">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <h2>Company Drives</h2>
+              </div>
+              <form id="companyForm" class="form-grid">
+                <div class="form-field">
+                  <label for="companyName">Company</label>
+                  <input id="companyName" required />
+                </div>
+                <div class="form-field">
+                  <label for="companyCgpa">Min CGPA</label>
+                  <input id="companyCgpa" type="number" step="0.1" min="0" max="10" required />
+                </div>
+                <div class="form-field full">
+                  <label for="companyRoles">Roles</label>
+                  <input id="companyRoles" placeholder="SDE, Analyst" />
+                </div>
+                <div class="form-actions full">
+                  <button type="submit" class="btn btn-primary">Save Company</button>
+                </div>
+              </form>
+              <table class="table compact mt-md">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Min CGPA</th>
+                    <th>Roles</th>
+                  </tr>
+                </thead>
+                <tbody id="companyTableBody"></tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h2>Student Placement Status</h2>
+              </div>
+              <form id="placementForm" class="form-grid">
+                <div class="form-field">
+                  <label for="placeStudentId">Student ID</label>
+                  <input id="placeStudentId" required />
+                </div>
+                <div class="form-field">
+                  <label for="placeCompany">Company</label>
+                  <input id="placeCompany" required />
+                </div>
+                <div class="form-field">
+                  <label for="placeStatus">Status</label>
+                  <select id="placeStatus">
+                    <option value="applied">Applied</option>
+                    <option value="shortlisted">Shortlisted</option>
+                    <option value="selected">Selected</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+                <div class="form-actions full">
+                  <button type="submit" class="btn btn-secondary">Update Status</button>
+                </div>
+              </form>
+              <table class="table compact mt-md">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="placementTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./js/placements.js"></script>
+  </body>
+</html>
+

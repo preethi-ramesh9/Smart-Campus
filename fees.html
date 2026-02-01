@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-page="fees">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Smart Campus - Fees</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/forms.css" />
+    <link rel="stylesheet" href="css/tables.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-logo">SC</div>
+          <div class="brand-text">
+            <span class="brand-title">Smart Campus</span>
+            <span class="brand-subtitle">College ERP</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="nav-section-label">Main</div>
+          <button class="nav-item" data-page="dashboard" onclick="location.href='dashboard.html'">
+            <span class="nav-icon">🏠</span><span>Dashboard</span>
+          </button>
+          <button class="nav-item" data-page="students" onclick="location.href='students.html'">
+            <span class="nav-icon">👩‍🎓</span><span>Students</span>
+          </button>
+          <button class="nav-item" data-page="faculty" onclick="location.href='faculty.html'">
+            <span class="nav-icon">👨‍🏫</span><span>Faculty</span>
+          </button>
+          <button class="nav-item" data-page="attendance" onclick="location.href='attendance.html'">
+            <span class="nav-icon">🕒</span><span>Attendance</span>
+          </button>
+          <button class="nav-item" data-page="courses" onclick="location.href='courses.html'">
+            <span class="nav-icon">📚</span><span>Courses</span>
+          </button>
+          <button class="nav-item" data-page="exams" onclick="location.href='exams.html'">
+            <span class="nav-icon">📝</span><span>Exams & Results</span>
+          </button>
+          <button class="nav-item" data-page="fees" onclick="location.href='fees.html'">
+            <span class="nav-icon">💰</span><span>Fees</span>
+          </button>
+          <div class="nav-section-label">More</div>
+          <button class="nav-item" data-page="timetable" onclick="location.href='timetable.html'">
+            <span class="nav-icon">📅</span><span>Timetable</span>
+          </button>
+          <button class="nav-item" data-page="materials" onclick="location.href='materials.html'">
+            <span class="nav-icon">📝</span><span>Materials & Notes</span>
+          </button>
+          <button class="nav-item" data-page="notifications" onclick="location.href='notifications.html'">
+            <span class="nav-icon">📢</span><span>Notifications</span>
+          </button>
+          <button class="nav-item" data-page="library" onclick="location.href='library.html'">
+            <span class="nav-icon">📖</span><span>Library</span>
+          </button>
+          <button class="nav-item" data-page="placements" onclick="location.href='placements.html'">
+            <span class="nav-icon">💼</span><span>Placements</span>
+          </button>
+          <button class="nav-item" data-page="settings" onclick="location.href='settings.html'">
+            <span class="nav-icon">⚙️</span><span>Settings</span>
+          </button>
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1>Fees</h1>
+            <p class="topbar-subtitle">Fee structures and payment status</p>
+          </div>
+          <div class="topbar-right">
+            <span id="currentUserLabel" class="text-muted"></span>
+            <button id="logoutButton" class="btn btn-ghost">Logout</button>
+          </div>
+        </header>
+        <section class="page">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <h2>Fee Structure</h2>
+              </div>
+              <form id="feeForm" class="form-grid">
+                <div class="form-field full">
+                  <label for="feeProgram">Program / Semester</label>
+                  <input id="feeProgram" placeholder="B.E CSE - Sem 5" required />
+                </div>
+                <div class="form-field">
+                  <label for="feeTuition">Tuition Fee</label>
+                  <input id="feeTuition" type="number" min="0" required />
+                </div>
+                <div class="form-field">
+                  <label for="feeExam">Exam Fee</label>
+                  <input id="feeExam" type="number" min="0" required />
+                </div>
+                <div class="form-field">
+                  <label for="feeOther">Other Charges</label>
+                  <input id="feeOther" type="number" min="0" required />
+                </div>
+                <div class="form-actions full">
+                  <button type="submit" class="btn btn-primary">Save Structure</button>
+                </div>
+              </form>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h2>Pay Fees / Status</h2>
+              </div>
+              <form id="feePayForm" class="form-grid">
+                <div class="form-field">
+                  <label for="payStudentId">Student ID</label>
+                  <input id="payStudentId" placeholder="S001" required />
+                </div>
+                <div class="form-field">
+                  <label for="payProgram">Program</label>
+                  <input id="payProgram" placeholder="B.E CSE - Sem 5" required />
+                </div>
+                <div class="form-actions full">
+                  <button type="submit" class="btn btn-secondary">Mark as Paid</button>
+                </div>
+              </form>
+              <table class="table compact mt-md">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Program</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="paymentsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card mt-lg">
+            <div class="card-header">
+              <h2>Fee Structures</h2>
+            </div>
+            <table class="table compact">
+              <thead>
+                <tr>
+                  <th>Program</th>
+                  <th>Tuition</th>
+                  <th>Exam</th>
+                  <th>Other</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="feeTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./js/fees.js"></script>
+  </body>
+</html>
+
